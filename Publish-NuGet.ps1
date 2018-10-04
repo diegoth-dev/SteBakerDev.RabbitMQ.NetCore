@@ -1,5 +1,5 @@
 ﻿
-$version = "1.0.1";
+$version = "1.0.2";
 
 Write-Output "Publishing SteBakerDev.RabbitMQ.NetCore.$version.nupkg";
 

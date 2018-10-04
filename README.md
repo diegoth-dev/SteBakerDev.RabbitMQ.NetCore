@@ -1,13 +1,17 @@
 # SteBakerDev.RabbitMQ.NetCore
-A NuGet package using the eShop on containers implementation of RabbitMQ with some added helper methods
+A NuGet package using the eShop on containers implementation of RabbitMQ with some small improvements & added helper methods
 
 [Source](https://github.com/dotnet-architecture/eShopOnContainers/)
 
 
 ## Usage (AspNetCore)
 
-- In Startup.cs, add the following to the ConfigureServices method to create a persistent connection. `queueName` is only required when subscribing to events
+- In Startup.cs, add the following to the ConfigureServices method to create a persistent connection & configure / inject the IEventBus implementation . `queueName` is only required when subscribing to events
 ``` cs
+    // Create a persistent connection
+    services.AddRabbitMQPersistentConnection("hostname", "username", "password", retryCount: 5);
+
+    // Setup the IEventBus and Exchange. QueueName is only required when subscribing to events  
     services.RegisterEventBus("MyMqExchangeName", queueName: "MyApplicationQueueName");
 ```
 

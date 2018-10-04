@@ -25,7 +25,7 @@ namespace SteBakerDev.EventBusRabbitMQ
         private readonly ILogger<EventBusRabbitMQ> _logger;
         private readonly IEventBusSubscriptionsManager _subsManager;
         private readonly ILifetimeScope _autofac;
-        private readonly string AUTOFAC_SCOPE_NAME = "eshop_event_bus";
+        private readonly string AUTOFAC_SCOPE_NAME = "stebakerdev_event_bus";
         private readonly int _retryCount;
 
         private IModel _consumerChannel;
@@ -98,7 +98,7 @@ namespace SteBakerDev.EventBusRabbitMQ
 
                     channel.BasicPublish(exchange: _brokerName,
                                      routingKey: eventName,
-                                     mandatory:true,
+                                     mandatory: true,
                                      basicProperties: properties,
                                      body: body);
                 });
@@ -116,6 +116,11 @@ namespace SteBakerDev.EventBusRabbitMQ
             where T : IntegrationEvent
             where TH : IIntegrationEventHandler<T>
         {
+            if (_queueName == null)
+            {
+                throw new NullReferenceException("'queueName' is required to subscribe to events");
+            }
+
             var eventName = _subsManager.GetEventKey<T>();
             DoInternalSubscription(eventName);
             _subsManager.AddSubscription<T, TH>();
@@ -165,6 +170,11 @@ namespace SteBakerDev.EventBusRabbitMQ
 
         private IModel CreateConsumerChannel()
         {
+            if (_queueName == null)
+            {
+                return null;
+            }
+
             if (!_persistentConnection.IsConnected)
             {
                 _persistentConnection.TryConnect();
@@ -190,7 +200,7 @@ namespace SteBakerDev.EventBusRabbitMQ
 
                 await ProcessEvent(eventName, message);
 
-                channel.BasicAck(ea.DeliveryTag,multiple:false);
+                channel.BasicAck(ea.DeliveryTag, multiple: false);
             };
 
             channel.BasicConsume(queue: _queueName,
@@ -216,7 +226,7 @@ namespace SteBakerDev.EventBusRabbitMQ
                     foreach (var subscription in subscriptions)
                     {
                         if (subscription.IsDynamic)
-                        { 
+                        {
                             var handler = scope.ResolveOptional(subscription.HandlerType) as IDynamicIntegrationEventHandler;
                             dynamic eventData = JObject.Parse(message);
                             await handler.Handle(eventData);
