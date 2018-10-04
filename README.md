@@ -6,9 +6,9 @@ A NuGet package using the eShop on containers implementation of RabbitMQ with so
 
 ## Usage (AspNetCore)
 
-- In Startup.cs, add the following to the ConfigureServices method:
+- In Startup.cs, add the following to the ConfigureServices method to create a persistent connection. `queueName` is only required when subscribing to events
 ``` cs
-    services.RegisterEventBus("MyMqExchangeName", "MyApplicationQueueName");
+    services.RegisterEventBus("MyMqExchangeName", queueName: "MyApplicationQueueName");
 ```
 
 - To send events, inject the IEventBus instance and call the Publish method:
@@ -30,17 +30,20 @@ A NuGet package using the eShop on containers implementation of RabbitMQ with so
 - If your application needs to subscribe to events, create an EventHandler and add the following to Configure method:
 ``` cs
 // Startup.cs
+
     var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
 
-    eventBus.Subscribe<CustomerUpdatedIntegrationEvent, CustomerUpdatedIntegrationEventHandler>();
+    eventBus.Subscribe<CustomerUpdatedEvent, CustomerUpdatedEventHandler>();
 
-CustomerUpdatedIntegrationEventHandler.cs
+...
 
-    public class CustomerUpdatedIntegrationEventHandler : IIntegrationEventHandler<CustomerUpdatedEvent>
+// CustomerUpdatedIntegrationEventHandler.cs
+
+    public class CustomerUpdatedEventHandler : IIntegrationEventHandler<CustomerUpdatedEvent>
     {
         public async Task Handle(CustomerUpdatedEvent @event)
         {
-            Console.WriteLine("Received Event");
+            Console.WriteLine("Received a CustomerUpdatedEvent");
         }
     }
 
