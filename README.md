@@ -8,19 +8,11 @@ A NuGet package using the eShop on containers implementation of RabbitMQ with so
 
 - In Startup.cs, add the following to the ConfigureServices method:
 ``` cs
-    services.RegisterEventBus("MyExchange", "MyApplication");
-```
-
-- If your application needs to subscribe to events, add the following to the Configure method:
-
-``` cs
-    var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
-
-    eventBus.Subscribe<CustomerUpdatedIntegrationEvent, CustomerUpdatedIntegrationEventHandler>();
+    services.RegisterEventBus("MyMqExchangeName", "MyApplicationQueueName");
 ```
 
 - To send events, inject the IEventBus instance and call the Publish method:
-- 
+
 ``` cs
     private readonly IEventBus _eventBus;
 
@@ -34,4 +26,24 @@ A NuGet package using the eShop on containers implementation of RabbitMQ with so
         // Publish an event to MyExchange
         _eventBus.Publish(new CustomerUpdatedEvent(customerId));
     }
+```
+
+- If your application needs to subscribe to events, create an EventHandler and add the following to Configure method:
+
+``` cs
+// Startup.cs
+    var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
+
+    eventBus.Subscribe<CustomerUpdatedIntegrationEvent, CustomerUpdatedIntegrationEventHandler>();
+
+CustomerUpdatedIntegrationEventHandler.cs
+
+    public class CustomerUpdatedIntegrationEventHandler : IIntegrationEventHandler<CustomerUpdatedEvent>
+    {
+        public async Task Handle(CustomerUpdatedEvent @event)
+        {
+            Console.WriteLine("Received Event");
+        }
+    }
+
 ```
