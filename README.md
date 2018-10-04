@@ -11,7 +11,7 @@ A NuGet package using the eShop on containers implementation of RabbitMQ with so
     services.RegisterEventBus("MyExchange", "MyApplication");
 ```
 
-- If your application needs to subscribe to events, add the following:
+- If your application needs to subscribe to events, add the following to the Configure method:
 
 ``` cs
     var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
