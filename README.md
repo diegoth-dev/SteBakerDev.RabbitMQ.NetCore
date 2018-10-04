@@ -12,7 +12,6 @@ A NuGet package using the eShop on containers implementation of RabbitMQ with so
 ```
 
 - To send events, inject the IEventBus instance and call the Publish method:
-
 ``` cs
     private readonly IEventBus _eventBus;
 
@@ -29,7 +28,6 @@ A NuGet package using the eShop on containers implementation of RabbitMQ with so
 ```
 
 - If your application needs to subscribe to events, create an EventHandler and add the following to Configure method:
-
 ``` cs
 // Startup.cs
     var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
