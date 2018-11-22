@@ -58,5 +58,5 @@ A NuGet package based off the Microsoft eShop on containers implementation of Ra
 
 ## TODO
 
-[] Setup a CI server to publish NuGet packages
+- [ ] Setup a CI server to publish NuGet packages
 
