@@ -1,5 +1,5 @@
 # SteBakerDev.RabbitMQ.NetCore
-A NuGet package based off the eShop on containers implementation of RabbitMQ with some small improvements & added helper methods
+A NuGet package based off the Microsoft eShop on containers implementation of RabbitMQ with some small improvements & added helper methods
 
 [Source](https://github.com/dotnet-architecture/eShopOnContainers/)
 
@@ -55,3 +55,8 @@ A NuGet package based off the eShop on containers implementation of RabbitMQ wit
     }
 
 ```
+
+## TODO
+
+[] Setup a CI server to publish NuGet packages
+
